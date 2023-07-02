@@ -2,6 +2,7 @@ import json
 from typing import Dict, List
 import subprocess
 import pathlib
+import argparse
 
 
 def _flatten_keys(contents: List) -> List:
@@ -30,7 +31,22 @@ def _parse_output(output: str) -> str:
     return output.strip().split(" ")[0]
 
 
+def _parse_args():
+    """Parse command line arguments"""
+    # optional argument for indicating matching mode
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-m",
+        "--matching",
+        default="fuzzy",
+        choices=["fuzzy", "normal", "regex", "glob", "prefix"],
+        help="Rofi matching mode, see rofi -h",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = _parse_args()
     with open(
         pathlib.Path.home().joinpath(
             ".local", "share", "mbc-unicode-input", "symbols.json"
@@ -40,7 +56,9 @@ def main():
         contents = _flatten_keys(json.loads(json_raw))
         formatted = _format_contents(contents)
         output = subprocess.run(
-            ["rofi", "-dmenu"], input=str.encode(formatted), stdout=subprocess.PIPE
+            ["rofi", "-dmenu", "-matching", args.matching],
+            input=str.encode(formatted),
+            stdout=subprocess.PIPE,
         ).stdout.decode("utf-8")
         if len(output) > 0:
             _wtype(_parse_output(output))
