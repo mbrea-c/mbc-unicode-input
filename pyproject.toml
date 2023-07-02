@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "mbc-unicode-input"
+version = "0.1.0"
+description = ""
+authors = ["Manuel Brea <m.brea.carreras@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "mbc_unicode_input" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+# script: main:main
+[tool.poetry.scripts]
+mbc-unicode-input = "mbc_unicode_input.main:main"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
